@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { SendMessageResponse } from '../types/sendMessage';
+import { SendMessageResponse } from '../types';
 import { DeleteMessageResponse } from '../types';
 import { logger } from './logger';
 import { BASE_TELEGRAM_URL, DELETE_AFTER_MS } from '../constants';
