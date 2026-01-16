@@ -1,4 +1,4 @@
-import { TelegramApiResponse } from './baseTypes.ts';
+import type { TelegramApiResponse } from './baseTypes.ts';
 
 interface Message {
   message_id: number;
@@ -58,3 +58,5 @@ interface MessageEntity {
 }
 
 export type SendMessageResponse = TelegramApiResponse<Message>;
+
+export type DeleteMessageResponse = TelegramApiResponse<true>;
