@@ -4,11 +4,8 @@
   "type": "module",
   "description": "simple bot for discord using nodejs for telegram notifications",
   "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
-    "start": "node --experimental-specifier-resolution=node src/index.js"
+    "start": "tsx src/index.ts"
   },
-  "author": "saulyak2708@gmail.com",
   "dependencies": {
     "colors": "^1.4.0",
     "discord.js": "^14.25.1",
@@ -17,7 +14,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.0.8",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
