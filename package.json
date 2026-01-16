@@ -1,0 +1,23 @@
+{
+  "name": "discord_bot_node",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "simple bot for discord using nodejs for telegram notifications",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node --experimental-specifier-resolution=node src/index.js"
+  },
+  "author": "saulyak2708@gmail.com",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.2.3",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
