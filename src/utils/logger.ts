@@ -39,5 +39,6 @@ export const logger = (
   body?: string
 ) => {
   loggerMapper[theme](message);
+
   if (body) loggerMapper[theme](body);
 };

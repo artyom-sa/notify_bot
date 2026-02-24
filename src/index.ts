@@ -1,40 +1,17 @@
 import 'dotenv/config';
-import { VoiceState } from 'discord.js';
-import { sendTelegramMessage } from './utils/sendTelegramMessage.ts';
-import discordClient from './client';
+import { requireEnv } from './config/env.ts';
+import { createDiscordClient } from './discord/index.ts';
+import { registerDiscordListeners } from './discord/listeners/index.ts';
+import { createTelegramApi } from './telegram/api/api.ts';
+import { createTelegramBot } from './telegram/index.ts';
+import { registerTelegramListeners } from './telegram/listeners/index.ts';
 
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN!;
+const telegramBot = createTelegramBot();
+const discordClient = createDiscordClient();
 
-discordClient.once('ready', () => {
-  console.log(`🤖 Бот запущен как ${discordClient.user?.tag}`);
-  sendTelegramMessage(`🤖 Бот запущен как ${discordClient.user?.tag}`);
-});
+const telegramApi = createTelegramApi(telegramBot);
 
-discordClient.on(
-  'voiceStateUpdate',
-  async (oldState: VoiceState, newState: VoiceState) => {
-    if (!oldState.channel && newState.channel) {
-      const member = newState.member;
-      if (!member) return;
+registerTelegramListeners(telegramBot, telegramApi);
+registerDiscordListeners(discordClient, telegramApi);
 
-      const channel = newState.channel;
-      console.log(`[INFO] ${member.user.username} вошёл в ${channel.name}`);
-
-      const members = channel.members.map((m) => m.user.username);
-
-      let text = `🎙️ В *${channel.name}* зашёл *${member.user.username}*\n\n`;
-      text += `Сейчас в канале:\n`;
-
-      for (const name of members) {
-        text +=
-          name === member.user.username
-            ? `➡️ ${name} (зашёл)\n`
-            : `- ${name}\n`;
-      }
-
-      await sendTelegramMessage(text);
-    }
-  }
-);
-
-discordClient.login(DISCORD_TOKEN);
+discordClient.login(requireEnv('DISCORD_TOKEN'));
