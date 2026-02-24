@@ -128,7 +128,19 @@ ID of the Telegram group chat where notifications will be sent.
 ID of a private Telegram chat.
 Useful for testing, debugging, or personal notifications.
 
----
+## Api league
+
+**API_LEAGUE_KEY**
+
+API key obtained from https://apileague.com/
+
+**API_LEAGUE_URL**
+
+https://api.apileague.com
+
+**GROK_API_KEY**
+
+API key obtained from https://console.groq.com/home
 
 # 🚀 Running the Bot
 
@@ -155,25 +167,3 @@ Starts the bot in production mode:
 ```bash
   npm run start
 ```
-
----
-
-# 🧠 How It Works (High Level)
-
-1. The bot connects to Discord using DISCORD_TOKEN
-
-2. It listens to Discord events (e.g. voiceStateUpdate)
-
-3. When a user joins a voice channel, the bot:
-
-   - collects channel and user information
-
-   - formats a message
-
-   - sends it to Telegram using the Telegram Bot API
-
----
-
-# 📄 License
-
-This project is provided as-is and is free to use, modify, and distribute for personal or commercial purposes.
