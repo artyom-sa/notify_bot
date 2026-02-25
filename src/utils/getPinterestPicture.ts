@@ -70,10 +70,7 @@ export const getPinterestPicture = async (query: string) => {
     return;
   }
 
-  const randomImage =
-    imageUrls[Math.floor(Math.random() * Math.max(imageUrls.length - 1, 0))];
-
-  const imageUrl = randomImage.split(',')[3].trim().split(' ')[0];
-
-  return imageUrl;
+  return imageUrls[
+    Math.floor(Math.random() * Math.max(imageUrls.length - 1, 0))
+  ];
 };
