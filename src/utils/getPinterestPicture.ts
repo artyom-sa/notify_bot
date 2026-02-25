@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import { logger } from './logger.ts';
 
 function getRandomDuration(): number {
   return Math.floor(Math.random() * 1200) + 200;
@@ -36,7 +37,7 @@ export const getPinterestPicture = async (query: string) => {
   // imitate scroll
   for (let i = 0; i < 5; i++) {
     await page.evaluate(() => {
-      window.scrollBy(0, window.innerHeight);
+      window.scrollBy(0, 1200);
     });
     await new Promise((r) => setTimeout(r, getRandomDuration()));
   }
@@ -55,9 +56,6 @@ export const getPinterestPicture = async (query: string) => {
             const cleanUrl = url.split('?')[0];
             urls.add(cleanUrl);
           }
-        } else if (img.src && img.src.includes('pinimg.com')) {
-          const cleanUrl = img.src.split('?')[0];
-          urls.add(cleanUrl);
         }
       });
 
@@ -65,6 +63,8 @@ export const getPinterestPicture = async (query: string) => {
   });
 
   await browser.close();
+
+  logger('info', JSON.stringify(imageUrls, null, 2));
 
   if (!imageUrls || !imageUrls.length) {
     return;
