@@ -1,4 +1,5 @@
 import { logger } from './logger.ts';
+import { stringifyValue } from './stringifyValue.ts';
 
 export const wrapWithLogger = <T extends (...args: any[]) => any>(
   func: T
@@ -19,24 +20,20 @@ export const wrapWithLogger = <T extends (...args: any[]) => any>(
         logger(
           'help',
           `${functionName} success`,
-          JSON.stringify(awaitedResult, null, 2)
+          stringifyValue(awaitedResult)
         );
 
         return awaitedResult;
       }
 
-      logger(
-        'help',
-        `${functionName} success`,
-        JSON.stringify(result, null, 2)
-      );
+      logger('help', `${functionName} success`, stringifyValue(result));
 
       return result;
     } catch (error) {
       logger(
         'error',
         `An error occurred in ${functionName}`,
-        error instanceof Error ? error.message : String(error)
+        stringifyValue(error instanceof Error ? error.message : error)
       );
     }
   }) as any;

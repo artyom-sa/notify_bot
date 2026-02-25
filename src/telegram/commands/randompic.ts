@@ -1,5 +1,6 @@
 import type { CommandHandlerArgs } from '../../types.ts';
 import { getPinterestPicture } from '../../utils/getPinterestPicture.ts';
+import { getRandomQueryForPinterest } from '../../utils/getRandomQueryForPinterest.ts';
 import { logger } from '../../utils/logger.ts';
 
 export async function randomPicCommand({
@@ -9,7 +10,11 @@ export async function randomPicCommand({
 }: CommandHandlerArgs) {
   const chatId = msg.chat.id;
 
-  const query = match[1] ? match[1].trim() : 'random pics';
+  const isProvidedUserQuery = match[1];
+
+  const query = isProvidedUserQuery
+    ? match[1].trim()
+    : getRandomQueryForPinterest();
 
   try {
     await api.deleteTelegramMessageWithDelay({
@@ -20,7 +25,7 @@ export async function randomPicCommand({
 
     const searchMessageResponse = await api.sendTelegramMessage({
       chatId,
-      text: `Ищу изображение на тему ${query} 🤔`
+      text: `Ищу изображение ${isProvidedUserQuery ? `на тему ${query}` : ''} 🤔`
     });
 
     const imageUrl = await getPinterestPicture(query);
@@ -35,7 +40,7 @@ export async function randomPicCommand({
     await api.sendPhoto({
       chatId,
       img: imageUrl,
-      text: `Нашел изображение на тему ${query} 🤓`
+      text: `Нашел изображение ${isProvidedUserQuery ? `на тему ${query}` : ''} 🤓`
     });
 
     await api.deleteTelegramMessageWithDelay({
