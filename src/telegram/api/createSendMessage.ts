@@ -1,6 +1,6 @@
 import type TelegramBot from 'node-telegram-bot-api';
 
-type SendMessage = {
+export type SendMessage = {
   text: string;
   chatId: number;
 };
