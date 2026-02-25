@@ -1,5 +1,9 @@
 import puppeteer from 'puppeteer';
 
+function getRandomDuration(): number {
+  return Math.floor(Math.random() * 1200) + 200;
+}
+
 export const getPinterestPicture = async (query: string) => {
   const browser = await puppeteer.launch({
     headless: true,
@@ -13,32 +17,61 @@ export const getPinterestPicture = async (query: string) => {
   });
   const page = await browser.newPage();
 
-  await page.goto(`https://www.pinterest.com/search/pins/?q=${query}`, {
-    waitUntil: 'networkidle2'
+  // Устанавливаем случайный user-agent чтобы не заблокировали
+  await page.setUserAgent({
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
   });
+
+  await page.goto(
+    `https://www.pinterest.com/search/pins/?q=${query}&rs=typed`,
+    {
+      waitUntil: 'networkidle2'
+    }
+  );
+
+  // Ждем появления картинок
+  await page.waitForSelector('img[src*="pinimg"]', { timeout: 10000 });
 
   // imitate scroll
   for (let i = 0; i < 5; i++) {
     await page.evaluate(() => {
       window.scrollBy(0, window.innerHeight);
     });
-    await new Promise((r) => setTimeout(r, 1200));
+    await new Promise((r) => setTimeout(r, getRandomDuration()));
   }
 
-  const images = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('img'))
-      .map((img) => img.srcset)
-      .filter((src) => src && src.includes('pinimg'));
+  const imageUrls = await page.evaluate(() => {
+    const urls = new Set<string>();
+
+    document
+      .querySelectorAll('img[src*="pinimg"]')
+      .forEach((img: HTMLImageElement) => {
+        if (img.srcset) {
+          const srcSets = img.srcset.split(',');
+          const url = srcSets[srcSets.length - 1].trim().split(' ')[0];
+
+          if (url.includes('pinimg.com')) {
+            const cleanUrl = url.split('?')[0];
+            urls.add(cleanUrl);
+          }
+        } else if (img.src && img.src.includes('pinimg.com')) {
+          const cleanUrl = img.src.split('?')[0];
+          urls.add(cleanUrl);
+        }
+      });
+
+    return Array.from(urls);
   });
 
   await browser.close();
 
-  if (!images || !images.length) {
+  if (!imageUrls || !imageUrls.length) {
     return;
   }
 
   const randomImage =
-    images[Math.floor(Math.random() * Math.max(images.length - 1, 0))];
+    imageUrls[Math.floor(Math.random() * Math.max(imageUrls.length - 1, 0))];
 
   const imageUrl = randomImage.split(',')[3].trim().split(' ')[0];
 
