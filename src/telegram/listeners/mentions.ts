@@ -18,7 +18,7 @@ export function registerMentionListeners(
 
     if (!isStartsWithMention) return;
 
-    const answer = await getGroqAnswer(userPrompt);
+    const answer = await getGroqAnswer({ userPrompt });
 
     telegramApi.sendTelegramMessage({
       text: answer,
