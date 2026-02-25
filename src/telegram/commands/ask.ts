@@ -1,16 +1,7 @@
-import Groq from 'groq-sdk';
-import { requireEnv } from '../../config/env.ts';
-import {
-  BOT_TELEGRAM_USERNAME,
-  GROK_MODEL,
-  GROK_PRESET_DEFAULT
-} from '../../constants/mentions.ts';
+import { BOT_TELEGRAM_USERNAME } from '../../constants/mentions.ts';
 import type { CommandHandlerArgs } from '../../types.ts';
+import { getGroqAnswer } from '../../utils/getGroqAnswer.ts';
 import { logger } from '../../utils/logger.ts';
-
-const groq = new Groq({
-  apiKey: requireEnv('GROK_API_KEY')
-});
 
 export const askCommand = async ({ api, msg }: CommandHandlerArgs) => {
   try {
@@ -20,20 +11,10 @@ export const askCommand = async ({ api, msg }: CommandHandlerArgs) => {
 
     const userPrompt = trimmedText.replace(BOT_TELEGRAM_USERNAME, '').trim();
 
-    const chatCompletion = await groq.chat.completions.create({
-      model: GROK_MODEL,
-      messages: [
-        {
-          role: 'system',
-          content: GROK_PRESET_DEFAULT
-        },
-        { role: 'user', content: userPrompt }
-      ],
-      temperature: 0.7
-    });
+    const answer = await getGroqAnswer(userPrompt, { rude: true });
 
-    api.sendTelegramMessage({
-      text: chatCompletion.choices[0].message.content,
+    await api.sendTelegramMessage({
+      text: answer,
       chatId: msg.chat.id
     });
   } catch (e) {
