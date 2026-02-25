@@ -19,6 +19,9 @@ export const createSendMessageWithCleanup = (telegramBot: TelegramBot) => {
 
     await new Promise((resolve) => setTimeout(resolve, delay));
 
-    await telegramBot.deleteMessage(chatId, sendMessageResult.message_id);
+    return await telegramBot.deleteMessage(
+      chatId,
+      sendMessageResult.message_id
+    );
   };
 };

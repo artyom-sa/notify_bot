@@ -15,7 +15,7 @@ const themes = {
 
 colors.setTheme(themes);
 
-const log = (message: string, theme: keyof typeof themes = 'warn'): void => {
+const log = (message: string, theme: keyof typeof themes = 'info'): void => {
   console.log(colors[themes[theme]](`${message}\n`));
 };
 
@@ -35,8 +35,8 @@ const loggerMapper = {
 
 export const logger = (
   theme: keyof typeof loggerMapper,
-  message: string,
-  body?: string
+  message: any,
+  body?: any
 ) => {
   loggerMapper[theme](message);
 
