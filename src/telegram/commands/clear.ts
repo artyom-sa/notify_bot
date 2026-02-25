@@ -54,7 +54,7 @@ export async function clearCommand({
   });
 
   // Удаляем уведомление через 3 сек
-  api.deleteTelegramMessageWithDelay({
+  await api.deleteTelegramMessageWithDelay({
     chatId,
     messageId: info.message_id,
     delay: 5000
