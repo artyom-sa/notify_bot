@@ -24,7 +24,7 @@ export const getGroqAnswer = async ({
     messages: [
       {
         role: 'system',
-        content: rude ? GROK_PRESET_DEFAULT : GROK_PRESET
+        content: rude ? GROK_PRESET : GROK_PRESET_DEFAULT
       },
       { role: 'user', content: userPrompt }
     ],

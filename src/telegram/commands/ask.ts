@@ -11,7 +11,7 @@ export const askCommand = async ({ api, msg }: CommandHandlerArgs) => {
 
     const userPrompt = trimmedText.replace(BOT_TELEGRAM_USERNAME, '').trim();
 
-    const answer = await getGroqAnswer({ userPrompt, rude: true });
+    const answer = await getGroqAnswer({ userPrompt });
 
     await api.sendTelegramMessage({
       text: answer,

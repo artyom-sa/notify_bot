@@ -8,7 +8,7 @@ export function registerDiscordListeners(
   client: Client,
   telegramApi: TelegramApi
 ) {
-  client.once('ready', (client) => readyEvent(client, telegramApi));
+  client.once('clientReady', (client) => readyEvent(client, telegramApi));
 
   client.on(
     'voiceStateUpdate',
