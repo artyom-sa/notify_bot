@@ -1,7 +1,16 @@
 import puppeteer from 'puppeteer';
 
 export const getPinterestPicture = async (query: string) => {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage', // Для экономии памяти в контейнерах
+      '--no-zygote', // Для совместимости с контейнерами
+      '--disable-gpu' // Отключаем GPU, он не нужен в облаке
+    ]
+  });
   const page = await browser.newPage();
 
   await page.goto(`https://www.pinterest.com/search/pins/?q=${query}`, {
