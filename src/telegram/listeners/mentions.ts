@@ -18,6 +18,13 @@ export function registerMentionListeners(
 
     if (!isStartsWithMention) return;
 
+    if (!userPrompt) {
+      return await telegramApi.sendTelegramMessage({
+        text: `Если тэгаешь и хочешь поболтать:\n\n<pre><code>${BOT_TELEGRAM_USERNAME} {ваш вопрос}</code></pre>\n\nИначе не тэгай 🙄`,
+        chatId: msg.chat.id
+      });
+    }
+
     const answer = await getGroqAnswer({ userPrompt, rude: true });
 
     telegramApi.sendTelegramMessage({
