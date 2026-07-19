@@ -1,169 +1,60 @@
-# 🤖 Simple Discord → Telegram Notification Bot
+# Discord → Telegram Voice Notifier
 
-A simple and lightweight **Discord bot** built with **Node.js + TypeScript** that listens to Discord events (such as users joining voice channels) and sends notifications to **Telegram**.
+Listens to Discord voice channels and sends Telegram notifications when someone joins — and when a channel becomes empty.
 
-This project is designed to be:
+## How it works
 
-- easy to set up
-- easy to extend
-- friendly for open-source usage
-
----
-
-# ✨ Features
-
-- 🎧 Track users joining Discord voice channels
-- 📩 Send notifications to Telegram (group or private chat)
-- 🧩 Written in TypeScript
-- ⚡ Lightweight and dependency-minimal
-- 🛠 Easy local development with hot reload
-- 🔌 Easy to extend with memes, media, analytics, etc.
-
----
-
-# 🧰 Tech Stack
-
-- **Node.js**
-- **TypeScript**
-- **Discord.js**
-- **Telegram Bot API**
-- **nodemon** (development)
-
----
-
-# 📦 Available Scripts
-
-The following scripts are available in `package.json`:
-
-```json
-{
-  "start": "node ./src/index.ts",
-  "dev": "nodemon ./src/index.ts",
-  "check-types": "tsc --build"
-}
+```
+Discord voiceStateUpdate
+  → join / empty-channel logic
+  → Telegram HTML message to GROUP_CHAT_ID
 ```
 
----
+On startup the bot also posts a short notice to `PRIVATE_CHAT_ID`.
 
-# 🛠 Scripts overview
+## Stack
 
-| Script        | Description                             |
-| ------------- | --------------------------------------- |
-| `start`       | Starts the bot in production mode       |
-| `dev`         | Runs the bot locally with hot reload    |
-| `check-types` | Runs TypeScript type checking and build |
+- Node.js + TypeScript
+- discord.js
+- node-telegram-bot-api
 
----
-
-# 🛠 Requirements
-
-Before running the project, make sure you have:
-
-- Node.js v25.2.1 or higher
-- npm (comes with Node.js)
-- A Discord bot token
-- A Telegram bot token
-
----
-
-# 📥 Installation
-
-1. Clone the repository:
+## Setup
 
 ```bash
-  git clone <repository-url>
-  cd <project-folder>
+npm install
+cp .env.example .env
 ```
 
-2. Install dependencies:
+Fill in:
+
+| Variable         | Purpose                                      |
+| ---------------- | -------------------------------------------- |
+| `DISCORD_TOKEN`  | Discord bot token                            |
+| `TELEGRAM_TOKEN` | Telegram bot token                           |
+| `GROUP_CHAT_ID`  | Telegram chat for voice notifications        |
+| `PRIVATE_CHAT_ID`| Telegram chat for the startup notice         |
+| `NODE_ENV`       | `development` or `production`                |
+
+In the Discord Developer Portal enable **Server Members Intent**.
+
+## Scripts
 
 ```bash
-  npm install
+npm run dev          # hot reload
+npm start            # production
+npm run check-types  # tsc
+npm test             # vitest
 ```
 
-3. Create an environment file:
+## Layout
 
-```bash
-  cp .env.example .env
 ```
-
----
-
-4. Fill in all required environment variables.
-
-# ⚙️ Environment Variables
-
-All configuration is done via environment variables.
-
-## Discord
-
-**DISCORD_TOKEN**
-
-Token of your Discord bot.
-
-You can get it from the Discord Developer Portal:
-https://discord.com/developers/applications
-
-**⚠️ Important:**
-
-In the Discord Developer Portal, you must enable:
-
-- Server Members Intent → true
-
-Without this intent, the bot will not work correctly.
-
-## Telegram
-
-**TELEGRAM_TOKEN**
-
-Token of your Telegram bot.
-Obtain it by creating a bot via @BotFather in Telegram.
-
-**GROUP_CHAT_ID**
-
-ID of the Telegram group chat where notifications will be sent.
-
-**PRIVATE_CHAT_ID**
-
-ID of a private Telegram chat.
-Useful for testing, debugging, or personal notifications.
-
-## Api league
-
-**API_LEAGUE_KEY**
-
-API key obtained from https://apileague.com/
-
-**API_LEAGUE_URL**
-
-https://api.apileague.com
-
-**GROK_API_KEY**
-
-API key obtained from https://console.groq.com/home
-
-# 🚀 Running the Bot
-
-**Development Mode**
-
-Runs the bot locally with automatic reload on file changes:
-
-```bash
-  npm run dev
-```
-
-**Type Checking and build**
-
-To validate TypeScript types and build the project:
-
-```bash
-  npm run check-types
-```
-
-**Production Mode**
-
-Starts the bot in production mode:
-
-```bash
-  npm run start
+src/
+  index.ts           composition root
+  config.ts          env
+  logger.ts
+  telegram.ts        outbound Telegram client
+  discord.ts         Discord client + event wiring
+  voice/             join/leave notify logic + tests
+  greeting/          playful join greetings
 ```
