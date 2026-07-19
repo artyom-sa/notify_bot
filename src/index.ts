@@ -1,17 +1,29 @@
-import 'dotenv/config';
-import { requireEnv } from './config/env.ts';
-import { createDiscordClient } from './discord/index.ts';
-import { registerDiscordListeners } from './discord/listeners/index.ts';
-import { createTelegramApi } from './telegram/api/api.ts';
-import { createTelegramBot } from './telegram/index.ts';
-import { registerTelegramListeners } from './telegram/listeners/index.ts';
+import { config } from './config.ts';
+import { createDiscordBot } from './discord.ts';
+import { log } from './logger.ts';
+import { createTelegramClient } from './telegram.ts';
 
-const telegramBot = createTelegramBot();
-const discordClient = createDiscordClient();
+const telegram = createTelegramClient(config.telegramToken);
 
-const telegramApi = createTelegramApi(telegramBot);
+const discord = createDiscordBot({
+  token: config.discordToken,
+  groupChatId: config.groupChatId,
+  privateChatId: config.privateChatId,
+  telegram
+});
 
-registerTelegramListeners(telegramBot, telegramApi);
-registerDiscordListeners(discordClient, telegramApi);
+const shutdown = async () => {
+  log.info('Shutting down…');
+  await discord.stop();
+};
 
-discordClient.login(requireEnv('DISCORD_TOKEN'));
+process.once('SIGINT', () => {
+  shutdown().finally(() => process.exit(0));
+});
+
+process.once('SIGTERM', () => {
+  shutdown().finally(() => process.exit(0));
+});
+
+await discord.start();
+log.info('Discord login initiated');
